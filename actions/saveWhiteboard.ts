@@ -2,9 +2,8 @@
 import fs from "fs"
 import { TLStoreSnapshot } from "tldraw"
 
-export const saveWhiteboard = async (document: TLStoreSnapshot) => {
+export const saveWhiteboard = async (json: string) => {
     const date = Date.now()
-    const json = JSON.stringify(document.store)
     console.log(json)
     fs.writeFile(`output-${date.toLocaleString()}.json`, json, 'utf-8', (err) => {
         if (err) {
