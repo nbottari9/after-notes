@@ -1,40 +1,40 @@
 "use client"
-import { saveWhiteboard } from "@/actions/saveWhiteboard"
+
 import { useCallback } from "react"
-import { loadSnapshot, useEditor } from "tldraw"
-import { useSaveModal } from "./SaveModalContext"
+import { loadSnapshot, useDialogs, useEditor } from "tldraw"
+
+import { SaveDialog } from "./SaveDialog"
+import { LoadDialog } from "./LoadDialog"
 
 export const SnapshotToolbar = () => {
     const editor = useEditor()
-	const {openSaveModal} = useSaveModal()
+	const {addDialog} = useDialogs()
 
     const save = useCallback(() => {
-        const {document, session} = editor.getSnapshot()
-        saveWhiteboard(JSON.stringify({document, session}))
-		openSaveModal()
-    }, [editor, openSaveModal])
+        addDialog({
+			component: SaveDialog,
+			onClose() {
+				void null
+			}
+		})
+    }, [addDialog])
 
-	const load = useCallback(async () => {
-		const res = await fetch("/api/test")
-		const snapshot = await res.json()
-		loadSnapshot(editor.store, JSON.parse(snapshot))
-	}, [editor])
+	const load = useCallback(() => {
+		addDialog({
+			component: LoadDialog,
+			onClose() {
+				void null
+			}
+		})
+	}, [addDialog])
 
     return (
         <div style={{ padding: 20, pointerEvents: 'all', display: 'flex', gap: '10px' }}>
-			<span
-				style={{
-					display: 'inline-block',
-					transition: 'transform 0.2s ease, opacity 0.2s ease',
-				}}
-			>
-				Saved ✅
-			</span>
 			<button
 				className="hover:cursor-pointer"
 				onClick={save}
 			>
-				Save Snapshot
+				Save
 			</button>
 			<button
 			onClick={load}
